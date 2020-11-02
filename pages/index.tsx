@@ -23,8 +23,7 @@ export default function IndexPage(props: Props): React.ReactElement {
     return (
         <Layout items={props.sidePaneItems}>
             <Head>
-                <title>Sample Blog</title>
-                <link rel="icon" href="/favicon.ico" />
+                <title>UIノート</title>
             </Head>
             <PageTitle>トップページ</PageTitle>
         </Layout>

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { SamplePageBase } from '../../components/SamplePageBase';
-import { BOX_SHADOW_LEVEL1, COLOR_BLUEGREY_200 } from '../../components/styles/styles';
+import { BOX_SHADOW_LEVEL1 } from '../../components/styles/styles';
 
 const Inner = styled.div`
     display: flex;

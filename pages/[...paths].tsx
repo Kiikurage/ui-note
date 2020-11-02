@@ -67,8 +67,7 @@ export default function IndexPage(props: Props): React.ReactElement {
     return (
         <Layout items={props.items}>
             <Head>
-                <title>{props.currentItem.title}</title>
-                <link rel="icon" href="/favicon.ico" />
+                <title>{props.currentItem.title} - UIノート</title>
             </Head>
             <PageTitle>{props.currentItem.title}</PageTitle>
             {renderMarkdown(props.markdownAST)}
