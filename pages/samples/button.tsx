@@ -37,6 +37,7 @@ const Button = styled.button`
     margin: 0;
     cursor: pointer;
     outline: none;
+    white-space: nowrap;
 
     &:focus {
         outline: 1px solid rgba(0, 0, 0, 0.5);
@@ -71,8 +72,6 @@ export default function ButtonSample(): React.ReactElement {
             <Inner>
                 <Card>
                     <Button>Button</Button>
-                </Card>
-                <Card>
                     <InlineButton>Inline Button</InlineButton>
                 </Card>
             </Inner>

@@ -13,6 +13,7 @@ const GlobalStyle = createGlobalStyle`
         font-size: 14px;
         line-height: 24px;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     }
 `;
 
