@@ -3,7 +3,7 @@ import { rgba } from 'polished';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import ArrowIcon from './icons/arrow_right.svg';
-import { COLOR_BLUEGREY_100, COLOR_BLUEGREY_200, COLOR_BLUEGREY_400, COLOR_PRIMARY, FONT_WEIGHT_NORMAL } from './styles/styles';
+import { COLOR_BLUEGREY_200, COLOR_BLUEGREY_400, COLOR_PRIMARY, FONT_WEIGHT_NORMAL, MEDIA_QUERY_ONLY_MOBILE } from './styles/styles';
 
 const Base = styled.div`
     display: flex;
@@ -17,16 +17,25 @@ const ItemBase = styled.div<{ selected: boolean }>`
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
-    line-height: 24px;
-    padding: 0 8px 0 24px;
-    border-radius: 12px;
+    line-height: 32px;
+    padding: 0 16px 0 32px;
+    border-radius: 16px;
     user-select: none;
     flex: 1;
     transition: background 60ms ease-out;
     cursor: pointer;
     color: ${(props) => (props.selected ? COLOR_PRIMARY : 'inherit')};
     background: ${(props) => (props.selected ? rgba(COLOR_PRIMARY, 0.07) : 'transparent')};
-    gap: 4px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    min-width: 0;
+
+    ${MEDIA_QUERY_ONLY_MOBILE} {
+        line-height: 48px;
+        padding: 0 24px 0 48px;
+        border-radius: 24px;
+    }
 
     &:hover {
         background: ${(props) => (props.selected ? rgba(COLOR_PRIMARY, 0.12) : rgba(COLOR_BLUEGREY_200, 0.2))};
@@ -54,16 +63,14 @@ const IconButton = styled.button`
     border: none;
     padding: 0;
     margin: 0;
-    width: 20px;
-    height: 20px;
+    width: 32px;
+    height: 32px;
     cursor: pointer;
     border-radius: 50%;
 
-    &:hover {
-        background: rgba(0, 0, 0, 0.05);
-    }
-    &:active {
-        background: rgba(0, 0, 0, 0.1);
+    ${MEDIA_QUERY_ONLY_MOBILE} {
+        width: 48px;
+        height: 48px;
     }
 `;
 
@@ -72,13 +79,9 @@ const Body = styled.div`
     flex-direction: column;
     align-items: stretch;
     justify-content: flex-start;
-    gap: 4px;
-    margin-top: 4px;
 
     & {
-        margin-left: 9px;
-        padding-left: 8px;
-        // border-left: 1px solid ${COLOR_BLUEGREY_100};
+        margin-left: 32px;
         box-sizing: border-box;
     }
 `;
