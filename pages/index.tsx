@@ -1,6 +1,6 @@
 import { GetStaticProps } from 'next';
-import Head from 'next/head';
 import React, { useEffect } from 'react';
+import { Helmet } from '../components/Helmet';
 import { Layout } from '../components/Layout';
 import { PageTitle } from '../components/PageTitle';
 import { SidePaneItemData } from '../model/SidePaneItemData';
@@ -22,10 +22,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
 export default function IndexPage(props: Props): React.ReactElement {
     return (
         <Layout items={props.sidePaneItems}>
-            <Head>
-                <link rel="manifest" href="/manifest.json" />
-                <title>UIノート</title>
-            </Head>
+            <Helmet title="UIノート" description="UIに関する情報を記録するサイト" />
             <SWRegister />
             <PageTitle>トップページ</PageTitle>
         </Layout>
@@ -35,14 +32,7 @@ export default function IndexPage(props: Props): React.ReactElement {
 function SWRegister(): React.ReactElement {
     useEffect(() => {
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker
-                .register('/sw.js')
-                .then(() => {
-                    console.log('service worker registration successful');
-                })
-                .catch((err) => {
-                    console.warn('service worker registration failed', err.message);
-                });
+            void navigator.serviceWorker.register('/sw.js');
         }
     }, []);
 

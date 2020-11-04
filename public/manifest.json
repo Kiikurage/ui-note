@@ -1,7 +1,12 @@
 {
-  "theme_color": "#fff",
-  "background_color": "#fff",
+  "theme_color": "#455a64",
+  "background_color": "#455a64",
   "display": "standalone",
   "scope": "/",
-  "start_url": "/"
+  "start_url": "/",
+  "icons": [{
+    "src": "/favicon.svg",
+    "sizes": "48x48",
+    "type": "image/svg"
+  }]
 }

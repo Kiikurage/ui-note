@@ -54,16 +54,16 @@ export namespace Post {
         const children: Post[] = [];
 
         for (const file of files) {
-            const stats = await fs.promises.stat(path.resolve(targetPath, file));
-            if (stats.isDirectory()) {
-                children.push(await loadAll(path.resolve(targetPath, file)));
-                continue;
-            }
-
             if (file.startsWith('_')) {
                 if (file === '_index.md') {
                     post = fromText(await fs.promises.readFile(path.resolve(targetPath, file), 'utf-8'));
                 }
+                continue;
+            }
+
+            const stats = await fs.promises.stat(path.resolve(targetPath, file));
+            if (stats.isDirectory()) {
+                children.push(await loadAll(path.resolve(targetPath, file)));
                 continue;
             }
 

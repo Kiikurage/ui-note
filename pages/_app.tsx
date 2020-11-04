@@ -11,9 +11,28 @@ const GlobalStyle = createGlobalStyle`
         min-height: 100vh;
         color: ${COLOR_BLUEGREY_900};
         font-size: 14px;
-        line-height: 24px;
+        line-height: 1.5;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        
+        a {
+            color: #00f;
+        }
+    }
+    
+    svg {
+        color: inherit;
+        fill: currentColor;
+    }
+    
+    a {
+        color: unset;
+        text-decoration: unset;
+    }
+    
+    button {
+        color: inherit;
+        font: inherit;
     }
 `;
 

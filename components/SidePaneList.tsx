@@ -3,7 +3,7 @@ import { rgba } from 'polished';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import ArrowIcon from './icons/arrow_right.svg';
-import { COLOR_BLUEGREY_200, COLOR_BLUEGREY_400, COLOR_PRIMARY, FONT_WEIGHT_NORMAL, MEDIA_QUERY_ONLY_MOBILE } from './styles/styles';
+import { COLOR_BLUEGREY_200, COLOR_PRIMARY, FONT_WEIGHT_NORMAL, MEDIA_QUERY_ONLY_MOBILE } from './styles/styles';
 
 const Base = styled.div`
     display: flex;
@@ -25,7 +25,7 @@ const ItemBase = styled.div<{ selected: boolean }>`
     transition: background 60ms ease-out;
     cursor: pointer;
     color: ${(props) => (props.selected ? COLOR_PRIMARY : 'inherit')};
-    background: ${(props) => (props.selected ? rgba(COLOR_PRIMARY, 0.07) : 'transparent')};
+    background: ${(props) => (props.selected ? rgba(COLOR_PRIMARY, 0.15) : 'transparent')};
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -38,26 +38,27 @@ const ItemBase = styled.div<{ selected: boolean }>`
     }
 
     &:hover {
-        background: ${(props) => (props.selected ? rgba(COLOR_PRIMARY, 0.12) : rgba(COLOR_BLUEGREY_200, 0.2))};
+        background: ${(props) => (props.selected ? rgba(COLOR_PRIMARY, 0.22) : rgba(COLOR_BLUEGREY_200, 0.2))};
     }
 
     &:active {
-        background: ${(props) => (props.selected ? rgba(COLOR_PRIMARY, 0.15) : rgba(COLOR_BLUEGREY_200, 0.3))};
+        background: ${(props) => (props.selected ? rgba(COLOR_PRIMARY, 0.27) : rgba(COLOR_BLUEGREY_200, 0.3))};
     }
 `;
 
 const Header = styled(ItemBase)<{ expanded: boolean }>`
-    font-weight: ${FONT_WEIGHT_NORMAL};
     padding-left: 0;
 
     svg {
-        fill: ${COLOR_BLUEGREY_400};
         transition: transform 60ms ease-out;
         transform: ${(props) => (props.expanded ? 'rotate(90deg)' : 'rotate(0deg)')};
     }
 `;
 
 const IconButton = styled.button`
+    display: flex;
+    align-items: center;
+    justify-content: center;
     outline: none;
     background: none;
     border: none;
@@ -89,6 +90,7 @@ const Body = styled.div`
 interface Props {
     href?: string;
     title: string;
+    selected?: boolean;
 }
 
 export function SidePaneList(props: React.PropsWithChildren<Props>): React.ReactElement {
@@ -97,7 +99,7 @@ export function SidePaneList(props: React.PropsWithChildren<Props>): React.React
     return (
         <Base>
             <Link href={props.href}>
-                <Header expanded={expanded} selected={false}>
+                <Header expanded={expanded} selected={props.selected}>
                     <IconButton
                         onClick={(ev) => {
                             ev.stopPropagation();

@@ -1,10 +1,12 @@
 import * as mdast from 'mdast';
+import * as footnote from 'mdast-util-footnote';
 import fromMarkdown from 'mdast-util-from-markdown';
+import * as syntax from 'micromark-extension-footnote';
 import { GetStaticPaths, GetStaticProps } from 'next';
-import Head from 'next/head';
 import React from 'react';
+import { Helmet } from '../components/Helmet';
 import { Layout } from '../components/Layout';
-import { renderMarkdown } from '../components/markdown/MarkdownUtil';
+import { renderMarkdown } from '../components/MarkdownUtil';
 import { PageTitle } from '../components/PageTitle';
 import { SidePaneItemData } from '../model/SidePaneItemData';
 
@@ -51,8 +53,14 @@ export const getStaticProps: GetStaticProps<Props, URLProps> = async (context) =
         item = (item?.children || items).find((item) => item.path.split('/').slice(-1)[0] === pathPart);
         if (!item) throw new Error('!');
     }
+    item.selected = true;
 
-    const markdownAST = fromMarkdown(item.body);
+    /* eslint-disable @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment */
+    const markdownAST = fromMarkdown(item.body, {
+        extensions: [syntax({ inlineNotes: true })],
+        mdastExtensions: [footnote.fromMarkdown],
+    });
+    /* eslint-enable @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment */
 
     return {
         props: {
@@ -66,9 +74,7 @@ export const getStaticProps: GetStaticProps<Props, URLProps> = async (context) =
 export default function IndexPage(props: Props): React.ReactElement {
     return (
         <Layout items={props.items}>
-            <Head>
-                <title>{props.currentItem.title} - UIノート</title>
-            </Head>
+            <Helmet title={`${props.currentItem.title} - UIノート`} description={props.currentItem.body.substr(0, 240) + '...'} />
             <PageTitle>{props.currentItem.title}</PageTitle>
             {renderMarkdown(props.markdownAST)}
         </Layout>

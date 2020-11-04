@@ -6,6 +6,7 @@ export interface SidePaneItemData {
     title: string;
     body: string;
     children: SidePaneItemData[];
+    selected: boolean;
 }
 
 export namespace SidePaneItemData {
@@ -22,6 +23,7 @@ export namespace SidePaneItemData {
             title: post.title,
             body: post.body,
             children: post.children.map((childPost) => fromPost(childPost, postPath)),
+            selected: false,
         };
     }
 }

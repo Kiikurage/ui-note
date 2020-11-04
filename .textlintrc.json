@@ -1,0 +1,12 @@
+{
+  "filters": {
+    "comments": {
+      "enablingComment": "textlint-enable",
+      "disablingComment": "textlint-disable"
+    }
+  },
+  "rules": {
+    "ja-technical-writing/sentence-length": false,
+    "preset-ja-technical-writing": true
+  }
+}
