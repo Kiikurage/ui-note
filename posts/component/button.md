@@ -3,11 +3,9 @@ title: Button
 slug: button
 ---
 
+アクションが実行できることをユーザーに提示し[^workday_canvas]、ワンクリックでアクションを実行するためのUI[^material_design]。
+
 ![Buttons](sample:/samples/component/button/buttons)
-
-## 使いどころ
-
-何らかのアクションが実行できることをユーザーに強調したいときに使用する。[^workday_canvas]
 
 ## ベストプラクティス
 

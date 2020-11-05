@@ -1,19 +1,18 @@
 import * as mdast from 'mdast';
-import { FootnoteDefinition } from 'mdast';
+import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import styled, { css } from 'styled-components';
+import { EnhancedFootnoteDefinition, EnhancedFootnoteReference, EnhancedImage, EnhancedRoot } from './MarkdownParseUtil';
 import { SampleViewer } from './SampleViewer';
 import { COLOR_BLUEGREY_100, COLOR_BLUEGREY_200, COLOR_BLUEGREY_600, MEDIA_QUERY_ONLY_MOBILE } from './styles/styles';
 
-interface RenderingContext {
-    footnoteDefinitions: FootnoteDefinition[];
-    footnoteIdentifierMap: Map<string, string>;
-    reverseFootnoteIdentifierMap: Map<string, string>;
-}
+const UL = styled.ul`
+    margin: 0 0 8px;
+`;
 
 const Paragraph = styled.div`
-    margin: 16px 0 16px;
+    margin: 8px 0 0;
 `;
 
 const HeaderAnchorLinkBase = styled.a`
@@ -50,6 +49,10 @@ const HeaderAnchorLinkBase = styled.a`
 
 const HeaderMixin = css`
     position: relative;
+
+    + ${Paragraph} {
+        margin-top: 0;
+    }
 `;
 
 const H1 = styled.h1`
@@ -58,43 +61,48 @@ const H1 = styled.h1`
 
 const H2 = styled.h2`
     ${HeaderMixin};
-    margin: 36px 0 8px;
-    border-bottom: 1px solid ${COLOR_BLUEGREY_100};
+    margin: 36px 0 0;
+    font-size: 28px;
+    color: ${COLOR_BLUEGREY_600};
+    border-bottom: 2px solid ${COLOR_BLUEGREY_100};
 
-    ${Paragraph} {
-        margin: 0;
+    + * {
+        margin-top: 0;
     }
 `;
 
 const H3 = styled.h3`
     ${HeaderMixin};
-    margin: 24px 0 0;
+    margin: 32px 0 0;
+    font-size: 20px;
 
-    ${Paragraph} {
-        margin: 0;
+    + * {
+        margin-top: 0;
     }
 `;
 
 const H4 = styled.h4`
-    ${HeaderMixin}
+    ${HeaderMixin};
+    margin: 16px 0 0;
+
+    + * {
+        margin-top: 0;
+    }
 `;
 
 const H5 = styled.h5`
-    ${HeaderMixin}
+    ${HeaderMixin};
+    margin: 16px 0 0;
 `;
 
 const H6 = styled.h6`
-    ${HeaderMixin}
-`;
-
-const UL = styled.ul`
-    margin: 16px 0;
+    ${HeaderMixin};
+    margin: 16px 0 0;
 `;
 
 const LI = styled.li`
     ${Paragraph} {
-        margin-top: 4px;
-        margin-bottom: 4px;
+        margin: 0;
     }
 `;
 
@@ -131,6 +139,7 @@ const Blockquote = styled.blockquote`
     border-left: 4px solid ${COLOR_BLUEGREY_200};
     padding-left: 16px;
     margin-left: 0;
+    color: ${COLOR_BLUEGREY_600};
 `;
 
 const ImageViewer = styled.figure`
@@ -141,14 +150,12 @@ const ImageViewer = styled.figure`
     max-width: min(100%, 640px);
     border-radius: 2px;
     padding: 0;
-    margin: 0;
+    margin: 8px 0;
     gap: 8px;
     box-sizing: border-box;
 
     img {
         position: relative;
-        max-width: 100%;
-        max-height: 40vh;
         box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.5);
     }
 
@@ -160,67 +167,14 @@ const ImageViewer = styled.figure`
     }
 `;
 
-function createRenderingContext(): RenderingContext {
-    return {
-        footnoteDefinitions: [],
-        footnoteIdentifierMap: new Map<string, string>(),
-        reverseFootnoteIdentifierMap: new Map<string, string>(),
-    };
-}
-
-export function renderMarkdown(root: mdast.Root): React.ReactNode {
-    const context = createRenderingContext();
-
-    const result = renderNodes(root.children, context);
-    if (context.footnoteDefinitions.length > 0) {
-        result.push(
-            <Footnote key="footer">
-                <ol>
-                    {context.footnoteDefinitions
-                        .sort((d1, d2) => (d1.identifier < d2.identifier ? -1 : d1.identifier > d2.identifier ? 1 : 0))
-                        .map((node) => renderNode(node, context))}
-                </ol>
-            </Footnote>
-        );
-    }
-
-    return result;
-}
-
-function renderNodes(nodes: mdast.Content[], context: RenderingContext): React.ReactNode[] {
-    const result: React.ReactNode[] = [];
-
-    for (let node of nodes) {
-        if (node.type === 'footnoteDefinition') {
-            let identifier = context.footnoteIdentifierMap.get(node.identifier);
-            if (identifier === undefined) {
-                identifier = (context.footnoteIdentifierMap.size + 1).toString();
-                context.footnoteIdentifierMap.set(node.identifier, identifier);
-                context.reverseFootnoteIdentifierMap.set(identifier, node.identifier);
-            }
-            context.footnoteDefinitions.push({ ...node, identifier: identifier });
-            continue;
-        }
-
-        if (node.type === 'footnoteReference') {
-            let identifier = context.footnoteIdentifierMap.get(node.identifier);
-            if (identifier === undefined) {
-                identifier = (context.footnoteIdentifierMap.size + 1).toString();
-                context.footnoteIdentifierMap.set(node.identifier, identifier);
-                context.reverseFootnoteIdentifierMap.set(identifier, node.identifier);
-            }
-            node = { ...node, identifier: identifier };
-        }
-
-        result.push(renderNode(node, context));
-    }
-
-    return result;
-}
-
-function generateKey(node: mdast.Content): string {
-    return `${node.type}-${node.position.start.offset}`;
-}
+const InlineCode = styled.code`
+    background: #e8e8e8;
+    font-size: 0.9em;
+    font-family: monospace;
+    padding: 2px 4px;
+    margin: 2px 4px;
+    border-radius: 2px;
+`;
 
 function HeaderAnchorLink(props: { node: mdast.Heading }): React.ReactElement {
     const hash = encodeURIComponent(getTextFromNode(props.node));
@@ -231,23 +185,26 @@ function HeaderAnchorLink(props: { node: mdast.Heading }): React.ReactElement {
     );
 }
 
-function getTextFromNode(node: mdast.Content): string {
-    if ('children' in node) {
-        return (node.children as mdast.Content[]).map(getTextFromNode).join('');
-    } else if (node.type === 'text') {
-        return node.value;
-    } else {
-        return '';
-    }
-}
-
-function renderNode(node: mdast.Content, context: RenderingContext): React.ReactElement {
+export function renderMarkdown(node: mdast.Root | mdast.Content): React.ReactElement {
     switch (node.type) {
+        case 'root': {
+            return (
+                <>
+                    {renderNodes(node.children)}
+                    {(node as EnhancedRoot).footnoteDefinitions.length > 0 && (
+                        <Footnote>
+                            <ol>{renderNodes((node as EnhancedRoot).footnoteDefinitions)}</ol>
+                        </Footnote>
+                    )}
+                </>
+            );
+        }
+
         case 'text':
             return <>{node.value}</>;
 
         case 'paragraph': {
-            return <Paragraph key={generateKey(node)}>{renderNodes(node.children, context)}</Paragraph>;
+            return <Paragraph key={generateKey(node)}>{node.children.map(renderMarkdown)}</Paragraph>;
         }
 
         case 'heading': {
@@ -255,35 +212,35 @@ function renderNode(node: mdast.Content, context: RenderingContext): React.React
                 case 1:
                     return (
                         <H1 key={generateKey(node)}>
-                            {renderNodes(node.children, context)}
+                            {node.children.map(renderMarkdown)}
                             <HeaderAnchorLink node={node} />
                         </H1>
                     );
                 case 2:
                     return (
                         <H2 key={generateKey(node)}>
-                            {renderNodes(node.children, context)}
+                            {node.children.map(renderMarkdown)}
                             <HeaderAnchorLink node={node} />
                         </H2>
                     );
                 case 3:
                     return (
                         <H3 key={generateKey(node)}>
-                            {renderNodes(node.children, context)}
+                            {node.children.map(renderMarkdown)}
                             <HeaderAnchorLink node={node} />
                         </H3>
                     );
                 case 4:
                     return (
                         <H4 key={generateKey(node)}>
-                            {renderNodes(node.children, context)}
+                            {node.children.map(renderMarkdown)}
                             <HeaderAnchorLink node={node} />
                         </H4>
                     );
                 case 5:
                     return (
                         <H5 key={generateKey(node)}>
-                            {renderNodes(node.children, context)}
+                            {node.children.map(renderMarkdown)}
                             <HeaderAnchorLink node={node} />
                         </H5>
                     );
@@ -291,7 +248,7 @@ function renderNode(node: mdast.Content, context: RenderingContext): React.React
                 default:
                     return (
                         <H6 key={generateKey(node)}>
-                            {renderNodes(node.children, context)}
+                            {node.children.map(renderMarkdown)}
                             <HeaderAnchorLink node={node} />
                         </H6>
                     );
@@ -300,16 +257,16 @@ function renderNode(node: mdast.Content, context: RenderingContext): React.React
 
         case 'list': {
             if (node.ordered) {
-                return <ol key={generateKey(node)}>{renderNodes(node.children, context)}</ol>;
+                return <ol key={generateKey(node)}>{node.children.map(renderMarkdown)}</ol>;
             } else {
-                return <UL key={generateKey(node)}>{renderNodes(node.children, context)}</UL>;
+                return <UL key={generateKey(node)}>{node.children.map(renderMarkdown)}</UL>;
             }
         }
 
         case 'listItem':
             return (
                 <LI key={generateKey(node)}>
-                    <div>{renderNodes(node.children, context)}</div>
+                    <div>{node.children.map(renderMarkdown)}</div>
                 </LI>
             );
 
@@ -317,13 +274,13 @@ function renderNode(node: mdast.Content, context: RenderingContext): React.React
             if (node.url.startsWith('/')) {
                 return (
                     <Link href={node.url} key={generateKey(node)}>
-                        <span>{renderNodes(node.children, context)}</span>
+                        <span>{node.children.map(renderMarkdown)}</span>
                     </Link>
                 );
             } else {
                 return (
                     <a href={node.url} target="_blank" rel="noopener noreferrer" key={generateKey(node)}>
-                        {renderNodes(node.children, context)}
+                        {node.children.map(renderMarkdown)}
                     </a>
                 );
             }
@@ -338,9 +295,18 @@ function renderNode(node: mdast.Content, context: RenderingContext): React.React
             if (resourceType === 'sample') {
                 return <SampleViewer title={node.alt} src={resourceUrl} key={generateKey(node)} />;
             } else {
+                const { width, height } = node as EnhancedImage;
+
+                let image: React.ReactNode;
+                if (width !== undefined && height !== undefined) {
+                    image = <Image src={node.url} alt={node.alt} width={width} height={height} />;
+                } else {
+                    image = <img src={node.url} alt={node.alt} />;
+                }
+
                 return (
                     <ImageViewer key={generateKey(node)}>
-                        <img src={node.url} alt={node.alt} />
+                        {image}
                         <figcaption>{node.title?.trim() ?? ''}</figcaption>
                     </ImageViewer>
                 );
@@ -348,7 +314,7 @@ function renderNode(node: mdast.Content, context: RenderingContext): React.React
         }
 
         case 'footnoteReference': {
-            const id = 'footer-' + context.reverseFootnoteIdentifierMap.get(node.identifier);
+            const id = `footer-${(node as EnhancedFootnoteReference).originalIdentifier}`;
             return (
                 <FootnoteMarker key={generateKey(node)}>
                     <a href={'#' + id}>
@@ -361,19 +327,22 @@ function renderNode(node: mdast.Content, context: RenderingContext): React.React
         case 'footnoteDefinition':
             return (
                 <FootnoteDefinitionView
-                    id={'footer-' + context.reverseFootnoteIdentifierMap.get(node.identifier)}
+                    id={`footer-${(node as EnhancedFootnoteDefinition).originalIdentifier}`}
                     value={node.identifier}
                     key={generateKey(node)}
                 >
-                    {renderNodes(node.children, context)}
+                    {node.children.map(renderMarkdown)}
                 </FootnoteDefinitionView>
             );
 
         case 'blockquote':
-            return <Blockquote key={generateKey(node)}>{renderNodes(node.children, context)}</Blockquote>;
+            return <Blockquote key={generateKey(node)}>{node.children.map(renderMarkdown)}</Blockquote>;
 
         case 'strong':
-            return <b key={generateKey(node)}>{renderNodes(node.children, context)}</b>;
+            return <b key={generateKey(node)}>{node.children.map(renderMarkdown)}</b>;
+
+        case 'inlineCode':
+            return <InlineCode key={generateKey(node)}>{node.value}</InlineCode>;
 
         case 'break':
         case 'code':
@@ -383,7 +352,6 @@ function renderNode(node: mdast.Content, context: RenderingContext): React.React
         case 'footnote':
         case 'html':
         case 'imageReference':
-        case 'inlineCode':
         case 'linkReference':
         case 'table':
         case 'tableCell':
@@ -392,5 +360,23 @@ function renderNode(node: mdast.Content, context: RenderingContext): React.React
         case 'yaml':
         default:
             return <>{JSON.stringify(node)}</>;
+    }
+}
+
+function renderNodes(nodes: mdast.Content[]): React.ReactNode {
+    return nodes.map(renderMarkdown);
+}
+
+function generateKey(node: mdast.Content): string {
+    return `${node.type}-${node.position.start.offset}`;
+}
+
+function getTextFromNode(node: mdast.Content): string {
+    if ('children' in node) {
+        return (node.children as mdast.Content[]).map(getTextFromNode).join('');
+    } else if (node.type === 'text') {
+        return node.value;
+    } else {
+        return '';
     }
 }
