@@ -1,5 +1,5 @@
 import { GetStaticProps } from 'next';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Helmet } from '../components/Helmet';
 import { Layout } from '../components/Layout';
 import { PageTitle } from '../components/PageTitle';
@@ -23,18 +23,14 @@ export default function IndexPage(props: Props): React.ReactElement {
     return (
         <Layout items={props.sidePaneItems}>
             <Helmet title="UIノート" description="UIに関する情報を記録するサイト" />
-            <SWRegister />
-            <PageTitle>トップページ</PageTitle>
+            <PageTitle>このサイトについて</PageTitle>
+            <ul>
+                <li>
+                    公開されているデザインシステムを横断的に確認できる資料集を目指す予定。
+                    特に、デザインの根拠・論理的説明を重視し、具体的な実装やUIライブラリの説明などはカバーしない。
+                </li>
+                <li>複数のデザインシステムやその他からベストプラクティスを集めているため、内容には互いに矛盾している項目も含まれうる。</li>
+            </ul>
         </Layout>
     );
-}
-
-function SWRegister(): React.ReactElement {
-    useEffect(() => {
-        if ('serviceWorker' in navigator) {
-            void navigator.serviceWorker.register('/sw.js');
-        }
-    }, []);
-
-    return null;
 }

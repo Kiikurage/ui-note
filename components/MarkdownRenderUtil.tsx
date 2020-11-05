@@ -5,7 +5,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { EnhancedFootnoteDefinition, EnhancedFootnoteReference, EnhancedImage, EnhancedRoot } from './MarkdownParseUtil';
 import { SampleViewer } from './SampleViewer';
-import { COLOR_BLUEGREY_100, COLOR_BLUEGREY_200, COLOR_BLUEGREY_600, MEDIA_QUERY_ONLY_MOBILE } from './styles/styles';
+import { COLOR_BLUEGREY_100, COLOR_BLUEGREY_200, COLOR_BLUEGREY_600, COLOR_LINK, MEDIA_QUERY_ONLY_MOBILE } from './styles/styles';
 
 const UL = styled.ul`
     margin: 0 0 8px;
@@ -176,6 +176,12 @@ const InlineCode = styled.code`
     border-radius: 2px;
 `;
 
+const StyledLinkBody = styled.span`
+    color: ${COLOR_LINK};
+    text-decoration: underline;
+    cursor: pointer;
+`;
+
 function HeaderAnchorLink(props: { node: mdast.Heading }): React.ReactElement {
     const hash = encodeURIComponent(getTextFromNode(props.node));
     return (
@@ -274,7 +280,7 @@ export function renderMarkdown(node: mdast.Root | mdast.Content): React.ReactEle
             if (node.url.startsWith('/')) {
                 return (
                     <Link href={node.url} key={generateKey(node)}>
-                        <span>{node.children.map(renderMarkdown)}</span>
+                        <StyledLinkBody>{node.children.map(renderMarkdown)}</StyledLinkBody>
                     </Link>
                 );
             } else {

@@ -64,7 +64,6 @@ export const getStaticProps: GetStaticProps<Props, URLProps> = async (context) =
 };
 
 export default function IndexPage(props: Props): React.ReactElement {
-    console.log(props.markdownAST);
     return (
         <Layout items={props.items}>
             <Helmet title={`${props.currentItem.title} - UIノート`} description={props.currentItem.body.substr(0, 240) + '...'} />
