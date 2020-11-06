@@ -3,8 +3,10 @@ import styled from 'styled-components';
 import { COLOR_BLUEGREY_600 } from './styles/styles';
 
 const Base = styled.div`
+    position: relative;
     border-radius: 4px;
     border: 1px solid #e0e0e0;
+    height: 160px;
 `;
 
 const Label = styled.header`
@@ -15,11 +17,13 @@ const Label = styled.header`
 `;
 
 const IFrame = styled.iframe`
-    position: relative;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     border: none;
     min-height: unset;
-    width: 100%;
-    height: 20vh;
 `;
 
 type Props = React.IframeHTMLAttributes<HTMLIFrameElement>;

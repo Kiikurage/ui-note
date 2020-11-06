@@ -301,7 +301,12 @@ export function renderMarkdown(node: mdast.Root | mdast.Content): React.ReactEle
             if (resourceType === 'sample') {
                 return <SampleViewer title={node.alt} src={resourceUrl} key={generateKey(node)} />;
             } else {
-                const { width, height } = node as EnhancedImage;
+                let { width, height } = node as EnhancedImage;
+                const MAX_HEIGHT = 320;
+                if (height > MAX_HEIGHT) {
+                    width *= MAX_HEIGHT / height;
+                    height = MAX_HEIGHT;
+                }
 
                 let image: React.ReactNode;
                 if (width !== undefined && height !== undefined) {
@@ -351,6 +356,8 @@ export function renderMarkdown(node: mdast.Root | mdast.Content): React.ReactEle
             return <InlineCode key={generateKey(node)}>{node.value}</InlineCode>;
 
         case 'break':
+            return <br />;
+
         case 'code':
         case 'definition':
         case 'delete':

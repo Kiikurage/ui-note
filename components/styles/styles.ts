@@ -25,7 +25,9 @@ export const BOX_SHADOW_LEVEL1 = '0 1px 3px 1px rgba(0, 0, 0, 0.15), 0 1px 1px 0
 export const BOX_SHADOW_LEVEL5 = '0 16px 10px 0 rgba(0, 0, 0, 0.15), 0 13px 5px -1px rgba(0, 0, 0, 0.2)';
 
 export const BREAKPOINT_MOBILE = 720;
-export const MEDIA_QUERY_ONLY_MOBILE = `@media(max-width: ${BREAKPOINT_MOBILE}px)`;
-export const MEDIA_QUERY_ONLY_PC = `@media(min-width: ${BREAKPOINT_MOBILE}px)`;
+export const MEDIA_QUERY_STRING_ONLY_MOBILE = `(max-width: ${BREAKPOINT_MOBILE}px)`;
+export const MEDIA_QUERY_STRING_ONLY_PC = `(min-width: ${BREAKPOINT_MOBILE}px)`;
+export const MEDIA_QUERY_ONLY_MOBILE = `@media${MEDIA_QUERY_STRING_ONLY_MOBILE}`;
+export const MEDIA_QUERY_ONLY_PC = `@media${MEDIA_QUERY_STRING_ONLY_PC}`;
 
 export const EASING_EASE_OUT = 'cubic-bezier(0,.5,.3,1)';
